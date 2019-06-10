@@ -1,0 +1,37 @@
+
+spring:
+  application:
+    name: service-zuul
+  cloud:
+    zookeeper:
+      connect-string: 192.168.200.152:2181
+
+server:
+  port: 8081
+
+zuul:
+  host:
+    connect-timeout-millis: 15000
+    socket-timeout-millis: 60000
+  #zuul有默认的隐射机制，如果没有配置路由映射，则可以通过路由Ip+服务名访问注册到注册中心的微服务，可以
+  #通过ignored-services设置不想向外界暴露除你配置的隐射之外的服务，*表示所有服务，则所有服务都要通过routes映射来访问。
+  ignored-services: "*"
+  add-proxy-headers: true
+  retryable: true
+  routes:
+    auth:
+      path: /auth/**
+      custom-sensitive-headers: true
+      serviceId: service-oauth2
+    user:
+      path: /user/**
+      sensitive-headers:
+      serviceId: service-user
+    order:
+      path: /order/**
+      sensitive-headers:
+      serviceId: service-order
+    goods:
+      path: /goods/**
+      sensitive-headers:
+      serviceId: service-goods

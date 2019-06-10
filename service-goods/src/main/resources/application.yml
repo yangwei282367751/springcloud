@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: service-goods
+
+  profiles:
+    active: dev
+
+  cloud:
+    zookeeper:
+      connect-string: 192.168.200.152:2181
+  rabbitmq:
+    host: 192.168.200.153
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /order
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 5
+          initial-interval: 3000
+        acknowledge-mode: manual
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: springcloud
+    password: springcloud
+    hikari:
+      maximum-pool-size: 15
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8086
+
+security:
+  oauth2:
+    resource:
+      id: service-goods
+      user-info-uri: http://192.168.200.100:8081/auth/user
+      prefer-token-info: false
+
+#开发环境配置
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://192.168.200.156:3306/springcloud-goods?useUnicode=true&serverTimezone=GMT%2B8&characterEncoding=UTF-8
+
+#生产环境配置
+---
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:mysql://192.168.200.150:3306/springcloud-goods?useUnicode=true&serverTimezone=GMT%2B8&characterEncoding=UTF-8

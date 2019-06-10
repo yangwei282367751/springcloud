@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: service-order
+
+  profiles:
+    active: dev
+
+  cloud:
+    zookeeper:
+      connect-string: 192.168.200.152:2181
+
+  rabbitmq:
+    host: 192.168.200.153
+    port: 5672
+    username: guest
+    password: guest
+    publisher-confirms: true
+    publisher-returns: true
+    virtual-host: /order
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: springcloud
+    password: springcloud
+    hikari:
+      maximum-pool-size: 15
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+redisson:
+  address: redis://192.168.200.153:6379
+  password:
+
+server:
+  port: 8085
+
+security:
+  oauth2:
+    resource:
+      id: service-goods
+      user-info-uri: http://192.168.200.100:8081/auth/user
+      prefer-token-info: false
+
+#开发环境配置
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://192.168.200.155:3306/springcloud-order?useUnicode=true&serverTimezone=GMT%2B8&characterEncoding=UTF-8
+
+#生产环境配置
+---
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:mysql://192.168.200.150:3306/springcloud-order?useUnicode=true&serverTimezone=GMT%2B8&characterEncoding=UTF-8
